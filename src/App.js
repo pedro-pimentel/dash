@@ -15,8 +15,14 @@ function App() {
 	return (
 		<div className="App">
 			<BrowserRouter>
-				<Routes>
-					<Route />
+				<button onClick={() => window.history.back()}>Voltar</button>
+				<Routes>					
+					<Route path="users" element={<UsersContainer />} >
+						<Route index element={<Users />} />
+						<Route path=":id/posts" element={<Posts />} />
+						<Route path=":id/posts/new/:postid" element={<NewPost />} />
+						<Route path=":id/posts/new" element={<NewPost />} />
+					</Route>
 				</Routes>		
 			</BrowserRouter>
 		</div>
