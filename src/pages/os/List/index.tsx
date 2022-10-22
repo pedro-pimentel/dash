@@ -1,41 +1,50 @@
 import React from "react";
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 import api from "../../../api/api";
 
 import {
     BrowserRouter as Router,
     Route,
     Link
-  } from "react-router-dom";
+} from "react-router-dom";
 
-export default function Users(){
+interface bairros{
+
+}
+
+export default function Users() {
     const [os, setOs] = useState<any[]>([]);
-    const [bairro, setBairro] = useState<any[]>([]);
-    // const GetBairro = async () => {
-    //     await api.get("/os").then((response) => setOs(response.data));
-    // };
+    let [bairro, setBairro] = useState<string[]>([]);
+    let bairros: any[] | ((prevState: string[]) => string[]) = [];
+    const getBairro = async () => {
+        const { data } = await api.get("/os");
+        data.map((datas: any) => (
+            bairros.push(datas['bairro'])
+        ));
+        bairros.sort();
+        setBairro(bairros);
+    };
     const getOs = async () => {
-       const { data } =  await api.get("/os");
-       console.log(data[0]['bairro']);
+        await api.get("/os").then((response) => setOs(response.data));
     };
 
     useEffect(() => {
-        getOs();
+        getBairro();
     }, []);
 
-    return(
+    return (
         <div className="OS">
             <h2>Listagem de O.S por bairro</h2>
             <ul>
-                {os &&
-                    os.map((data) =>(
-                        <li key={data.id}>
-                            <Link to={`${data.numero_ordem_servico}`}>{data.nome_cliente}</Link>
+                {bairro &&
+                    bairro.map((data) => (
+                        <li key={data}>
+                            <Link to={`${data}`}>{data}</Link>
                             <br />
                             <br />
                         </li>
                     ))
-                } 
+                }
             </ul>
         </div>
     );
